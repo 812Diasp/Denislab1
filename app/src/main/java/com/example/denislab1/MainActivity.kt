@@ -13,7 +13,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,9 +25,7 @@ class MainActivity : AppCompatActivity() {
 
 class DrawingView(context: Context) : View(context) {
 
-    private val paint = Paint().apply {
-        isAntiAlias = true
-    }
+    private val paint = Paint().apply { isAntiAlias = true }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -49,12 +46,14 @@ class DrawingView(context: Context) : View(context) {
         }
         canvas.drawText("Задание 4 — вариант 6: Ёлка", cx, h * 0.04f, paint)
 
-        val trunkTop = h * 0.40f
+        // Ствол
+        val trunkTop    = h * 0.40f
         val trunkBottom = h * 0.48f
-        val trunkHalf = 22f
+        val trunkHalf   = 22f
         paint.apply { style = Paint.Style.FILL; color = Color.parseColor("#8B4513") }
         canvas.drawRect(cx - trunkHalf, trunkTop, cx + trunkHalf, trunkBottom, paint)
 
+        // Нижний ярус
         paint.color = Color.parseColor("#14532D")
         val p1 = Path().apply {
             moveTo(cx, h * 0.20f)
@@ -64,6 +63,7 @@ class DrawingView(context: Context) : View(context) {
         }
         canvas.drawPath(p1, paint)
 
+        // Средний ярус
         paint.color = Color.parseColor("#16A34A")
         val p2 = Path().apply {
             moveTo(cx, h * 0.14f)
@@ -73,6 +73,7 @@ class DrawingView(context: Context) : View(context) {
         }
         canvas.drawPath(p2, paint)
 
+        // Верхний ярус
         paint.color = Color.parseColor("#4ADE80")
         val p3 = Path().apply {
             moveTo(cx, h * 0.08f)
@@ -82,59 +83,71 @@ class DrawingView(context: Context) : View(context) {
         }
         canvas.drawPath(p3, paint)
 
-        val starCy = h * 0.065f
-        val rOuter = 28f
-        val rInner = 13f
+        // Звезда
+        val starCy  = h * 0.065f
+        val rOuter  = 28f
+        val rInner  = 13f
         val starPath = Path()
         for (i in 0..9) {
-            val r = if (i % 2 == 0) rOuter else rInner
+            val r     = if (i % 2 == 0) rOuter else rInner
             val angle = (Math.PI / 5.0 * i - Math.PI / 2.0).toFloat()
-            val x = cx + r * cos(angle)
-            val y = starCy + r * sin(angle)
+            val x     = cx + r * cos(angle)
+            val y     = starCy + r * sin(angle)
             if (i == 0) starPath.moveTo(x, y) else starPath.lineTo(x, y)
         }
         starPath.close()
         paint.color = Color.parseColor("#FBBF24")
         canvas.drawPath(starPath, paint)
 
-        // ═══ ЗАДАНИЕ 3 — вариант 8: ЗЕЛЁНЫЙ КВАДРАТ (S ≈ P) ═══
+        // ═══ ЗАДАНИЕ 3 — вариант 8: ЗЕЛЁНЫЙ КВАДРАТ (S = P) ═══
 
         paint.apply {
+            style = Paint.Style.FILL
             color = Color.parseColor("#94A3B8")
             textSize = 32f
             textAlign = Paint.Align.CENTER
         }
-        canvas.drawText("Задание 3 — вариант 8: Квадрат (S ≈ P)", cx, h * 0.53f, paint)
+        canvas.drawText("Задание 3 — вариант 8: Квадрат (S = P)", cx, h * 0.53f, paint)
 
-        val side = minOf(w, h * 0.40f) * 0.45f
+        // --- Математическая сторона: a = 4 (из a² = 4a) ---
+        val a     = 4
+        val area  = a * a   // S = 16
+        val perim = 4 * a   // P = 16
+
+        // --- Визуальная сторона: 200 пикселей (только для отрисовки) ---
+        val side    = 200f
         val squareCy = h * 0.755f
 
+        // Заливка
         paint.apply { style = Paint.Style.FILL; color = Color.parseColor("#22C55E") }
-        canvas.drawRect(cx - side / 2f, squareCy - side / 2f, cx + side / 2f, squareCy + side / 2f, paint)
+        canvas.drawRect(cx - side / 2f, squareCy - side / 2f,
+            cx + side / 2f, squareCy + side / 2f, paint)
 
+        // Обводка
         paint.apply {
-            style = Paint.Style.STROKE
-            color = Color.parseColor("#86EFAC")
+            style       = Paint.Style.STROKE
+            color       = Color.parseColor("#86EFAC")
             strokeWidth = 4f
         }
-        canvas.drawRect(cx - side / 2f, squareCy - side / 2f, cx + side / 2f, squareCy + side / 2f, paint)
+        canvas.drawRect(cx - side / 2f, squareCy - side / 2f,
+            cx + side / 2f, squareCy + side / 2f, paint)
 
-        val sideInt = side.toInt()
-        val area = sideInt * sideInt
-        val perim = 4 * sideInt
+        // Текст S и P внутри квадрата
         paint.apply {
-            style = Paint.Style.FILL
-            color = Color.BLACK
-            textSize = 34f
+            style    = Paint.Style.FILL
+            color    = Color.BLACK
+            textSize = 36f
             textAlign = Paint.Align.CENTER
         }
-        canvas.drawText("S = $area", cx, squareCy - 14f, paint)
-        canvas.drawText("P = $perim", cx, squareCy + 28f, paint)
+        canvas.drawText("S = $area", cx, squareCy - 16f, paint)
+        canvas.drawText("P = $perim", cx, squareCy + 30f, paint)
 
+        // Пояснение под квадратом
         paint.apply {
-            color = Color.parseColor("#94A3B8")
+            color    = Color.parseColor("#94A3B8")
             textSize = 28f
         }
-        canvas.drawText("a² = 4a  →  a = 4  →  S = P = 16", cx, squareCy + side / 2f + 40f, paint)
+        canvas.drawText("a² = 4a  →  a = 4  →  S = P = 16",
+            cx, squareCy + side / 2f + 44f, paint)
     }
 }
